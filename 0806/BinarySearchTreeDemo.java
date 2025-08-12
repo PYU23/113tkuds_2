@@ -1,5 +1,4 @@
 public class BinarySearchTreeDemo {
-    
     static class TreeNode {
         int data;
         TreeNode left;
