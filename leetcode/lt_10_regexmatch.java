@@ -1,0 +1,61 @@
+public class lt_10_regexmatch {
+    static class Solution {
+        public boolean isMatch(String s, String p) {
+            int m = s.length(), n = p.length();
+            boolean[][] dp = new boolean[m + 1][n + 1];
+
+            dp[0][0] = true; // 空字串匹配空模式
+
+            // 初始化第一行（空字串匹配模式）
+            for (int j = 2; j <= n; j++) {
+                if (p.charAt(j - 1) == '*') {
+                    dp[0][j] = dp[0][j - 2];
+                }
+            }
+
+            for (int i = 1; i <= m; i++) {
+                for (int j = 1; j <= n; j++) {
+                    char sc = s.charAt(i - 1);
+                    char pc = p.charAt(j - 1);
+
+                    if (pc == sc || pc == '.') {
+                        dp[i][j] = dp[i - 1][j - 1];
+                    } else if (pc == '*') {
+                        // 匹配 0 次
+                        dp[i][j] = dp[i][j - 2];
+                        // 匹配 1+ 次
+                        char pPrev = p.charAt(j - 2);
+                        if (pPrev == sc || pPrev == '.') {
+                            dp[i][j] = dp[i][j] || dp[i - 1][j];
+                        }
+                    }
+                }
+            }
+
+            return dp[m][n];
+        }
+    }
+
+    public static void main(String[] args) {
+        Solution sol = new Solution();
+
+        String[][] testCases = {
+            {"aa", "a"},
+            {"aa", "a*"},
+            {"ab", ".*"},
+            {"aab", "c*a*b"},
+            {"mississippi", "mis*is*p*."},
+            {"", ".*"},
+            {"", ""},
+            {"abc", "abc"},
+            {"abcd", "d*"},
+            {"aaa", "a*a"}
+        };
+
+        for (String[] testCase : testCases) {
+            String s = testCase[0];
+            String p = testCase[1];
+            System.out.println("Input: s=\"" + s + "\", p=\"" + p + "\" -> Output: " + sol.isMatch(s, p));
+        }
+    }
+}
